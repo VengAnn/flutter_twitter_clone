@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:twitter_clone/components/textformfield_reusable_widget.dart';
+import 'package:twitter_clone/controllers/auth_controller.dart';
 import 'package:twitter_clone/screens/register_screen.dart';
 
 import '../constants/constant.dart';
@@ -8,9 +9,10 @@ import '../constants/constant.dart';
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
 
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  final emailController = TextEditingController(text: 'mario@gmail.com');
+  final passwordController = TextEditingController(text: '123123');
   final _formKey = GlobalKey<FormState>();
+  final _controller = Get.put(AuthController());
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +42,7 @@ class LoginScreen extends StatelessWidget {
                   TextFormFieldReusableWidget(
                     lableText: "Email",
                     hintText: "Email",
+                    prefixIcon: Icons.email,
                     controller: emailController,
                     obscureText: false,
                     autoFocus: true,
@@ -60,6 +63,7 @@ class LoginScreen extends StatelessWidget {
                   TextFormFieldReusableWidget(
                     lableText: "Password",
                     hintText: "Password",
+                    prefixIcon: Icons.lock,
                     controller: passwordController,
                     obscureText: true,
                     autoFocus: true,
@@ -81,7 +85,10 @@ class LoginScreen extends StatelessWidget {
                             style: kElevateButtonStyle,
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                print('login');
+                                _controller.login(
+                                  email: emailController.text,
+                                  password: passwordController.text,
+                                );
                               }
                             },
                             child: const Row(

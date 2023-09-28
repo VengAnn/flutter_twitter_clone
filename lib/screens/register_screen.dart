@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:twitter_clone/controllers/auth_controller.dart';
 
 import '../components/textformfield_reusable_widget.dart';
 import '../constants/constant.dart';
@@ -10,6 +11,8 @@ class RegisterScreen extends StatelessWidget {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  final _controller = Get.put(AuthController());
 
   @override
   Widget build(BuildContext context) {
@@ -25,26 +28,42 @@ class RegisterScreen extends StatelessWidget {
                 children: [
                   const Spacer(),
                   kSizedBox15,
-                  const Stack(
-                    children: [
-                      CircleAvatar(
-                        radius: 60,
-                        child: Text("Photo"),
-                      ),
-                      Positioned(
-                        right: 0,
-                        bottom: 0,
-                        child: Icon(
-                          Icons.camera_alt,
-                          size: 30,
-                        ),
-                      ),
-                    ],
+                  GetBuilder<AuthController>(
+                    builder: (_) {
+                      return Stack(
+                        children: [
+                          _controller.profile != null
+                              ? CircleAvatar(
+                                  radius: 60,
+                                  backgroundImage:
+                                      FileImage(_controller.profile!),
+                                )
+                              : const CircleAvatar(
+                                  radius: 60,
+                                  child: Text("Photo"),
+                                ),
+                          Positioned(
+                            right: 0,
+                            bottom: 0,
+                            child: GestureDetector(
+                              onTap: () {
+                                _controller.pickImage();
+                              },
+                              child: const Icon(
+                                Icons.camera_alt,
+                                size: 30,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                   kSizedBox20,
                   TextFormFieldReusableWidget(
                     lableText: "Name",
                     hintText: "Name",
+                    prefixIcon: Icons.person,
                     controller: nameController,
                     obscureText: false,
                     autoFocus: true,
@@ -61,6 +80,7 @@ class RegisterScreen extends StatelessWidget {
                   TextFormFieldReusableWidget(
                     lableText: "Email",
                     hintText: "Email",
+                    prefixIcon: Icons.email,
                     controller: emailController,
                     obscureText: false,
                     autoFocus: true,
@@ -81,6 +101,7 @@ class RegisterScreen extends StatelessWidget {
                   TextFormFieldReusableWidget(
                     lableText: "Password",
                     hintText: "Password",
+                    prefixIcon: Icons.lock,
                     controller: passwordController,
                     obscureText: true,
                     autoFocus: true,
@@ -102,7 +123,11 @@ class RegisterScreen extends StatelessWidget {
                             style: kElevateButtonStyle,
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                print('register');
+                                _controller.register(
+                                  email: emailController.text,
+                                  name: nameController.text,
+                                  password: passwordController.text,
+                                );
                               }
                             },
                             child: const Row(
