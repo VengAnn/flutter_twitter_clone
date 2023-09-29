@@ -45,7 +45,7 @@ class LoginScreen extends StatelessWidget {
                     prefixIcon: Icons.email,
                     controller: emailController,
                     obscureText: false,
-                    autoFocus: true,
+                    // autoFocus: true,
                     onTab: () {},
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -60,19 +60,28 @@ class LoginScreen extends StatelessWidget {
                     },
                   ),
                   kSizedBox20,
-                  TextFormFieldReusableWidget(
-                    lableText: "Password",
-                    hintText: "Password",
-                    prefixIcon: Icons.lock,
-                    controller: passwordController,
-                    obscureText: true,
-                    autoFocus: true,
-                    onTab: () {},
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Password required';
-                      }
-                      return null;
+                  GetBuilder<AuthController>(
+                    builder: (_) {
+                      return TextFormFieldReusableWidget(
+                        lableText: "Password",
+                        hintText: "Password",
+                        prefixIcon: Icons.lock,
+                        controller: passwordController,
+                        suffixIcon: _controller.hintIcon == true
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        obscureText: _controller.hintIcon,
+                        // autoFocus: true,
+                        onTab: () {
+                          _controller.toggle();
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Password required';
+                          }
+                          return null;
+                        },
+                      );
                     },
                   ),
                   kSizedBox20,

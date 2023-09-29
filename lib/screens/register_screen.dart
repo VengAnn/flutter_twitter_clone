@@ -10,6 +10,7 @@ class RegisterScreen extends StatelessWidget {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final cpasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   final _controller = Get.put(AuthController());
@@ -98,17 +99,45 @@ class RegisterScreen extends StatelessWidget {
                     },
                   ),
                   kSizedBox20,
+                  GetBuilder<AuthController>(
+                    builder: (_) {
+                      return TextFormFieldReusableWidget(
+                        lableText: "Password",
+                        hintText: "Password",
+                        prefixIcon: Icons.lock,
+                        controller: passwordController,
+                        suffixIcon: _controller.hintIcon == true
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        obscureText: _controller.hintIcon,
+                        autoFocus: true,
+                        onTab: () {
+                          _controller.toggle();
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Password required';
+                          }
+                          return null;
+                        },
+                      );
+                    },
+                  ),
+                  kSizedBox20,
                   TextFormFieldReusableWidget(
-                    lableText: "Password",
-                    hintText: "Password",
-                    prefixIcon: Icons.lock,
-                    controller: passwordController,
+                    lableText: "Confirm Password",
+                    hintText: "Confirm Password",
+                    prefixIcon: Icons.lock_reset,
+                    controller: cpasswordController,
                     obscureText: true,
                     autoFocus: true,
                     onTab: () {},
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Password required';
+                        return 'CPassword required';
+                      }
+                      if (value != passwordController.text) {
+                        return 'Please define Confirm pass like Password';
                       }
                       return null;
                     },

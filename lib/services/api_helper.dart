@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 class APIHelper {
   final _dio = Dio();
   final _bashUrl = "http://10.0.2.2:8000/api"; //local for andriod
+  //final _bashUrl = "http://10.0..2:8000/api"; //local for andriod
 
   Future<bool> register({
     required String email,

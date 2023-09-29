@@ -65,18 +65,34 @@ class AuthController extends GetxController {
 
   //for login
   void login({required String email, required String password}) async {
-    final res = await _apiHelper.login(email: email, password: password);
-
     try {
-      //bring user to home screen
-      Get.off(() => const MainScreen()); //get off can't back
+      final success = await _apiHelper.login(email: email, password: password);
+      if (success) {
+        //check login succes
+        //bring user to home screen
+        Get.offAll(() => const MainScreen()); //get off can't back
+      } else {
+        QuickAlert.show(
+          context: Get.context!,
+          type: QuickAlertType.error,
+          title: 'Oops...',
+          text: 'login failed OR Something went worng!',
+        );
+      }
     } catch (e) {
       QuickAlert.show(
         context: Get.context!,
         type: QuickAlertType.error,
         title: 'Oops...',
-        text: 'login failed!',
+        text: e.toString(),
       );
     }
+  }
+
+  //for toggle to see or hint password
+  bool hintIcon = true;
+  void toggle() {
+    hintIcon = !hintIcon;
+    update();
   }
 }
