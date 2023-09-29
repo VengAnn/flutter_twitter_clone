@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:twitter_clone/screens/main_screen.dart';
 import '../services/api_helper.dart';
@@ -9,6 +10,8 @@ class AuthController extends GetxController {
   File? profile;
   final _imagePicker = ImagePicker();
   final _apiHelper = APIHelper();
+  bool hintIcon = true;
+  final box = GetStorage();
 
   void setProfile(File? file) {
     profile = file;
@@ -66,11 +69,13 @@ class AuthController extends GetxController {
   //for login
   void login({required String email, required String password}) async {
     try {
-      final success = await _apiHelper.login(email: email, password: password);
-      if (success) {
-        //check login succes
+      final user = await _apiHelper.login(email: email, password: password);
+      if (user != null) {
+        //if user not null meaning login succes
+        //save token to local storage
+        box.write("token", user.token);
         //bring user to home screen
-        Get.offAll(() => const MainScreen()); //get off can't back
+        Get.offAll(() => MainScreen()); //get off can't back
       } else {
         QuickAlert.show(
           context: Get.context!,
@@ -90,7 +95,6 @@ class AuthController extends GetxController {
   }
 
   //for toggle to see or hint password
-  bool hintIcon = true;
   void toggle() {
     hintIcon = !hintIcon;
     update();

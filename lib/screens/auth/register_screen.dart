@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:twitter_clone/controllers/auth_controller.dart';
 
-import '../components/textformfield_reusable_widget.dart';
-import '../constants/constant.dart';
+import '../../components/textformfield_reusable_widget.dart';
+import '../../constants/constant.dart';
 
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({super.key});
@@ -106,17 +106,25 @@ class RegisterScreen extends StatelessWidget {
                         hintText: "Password",
                         prefixIcon: Icons.lock,
                         controller: passwordController,
-                        suffixIcon: _controller.hintIcon == true
-                            ? Icons.visibility_off
-                            : Icons.visibility,
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            _controller.toggle();
+                          },
+                          icon: Icon(
+                            _controller.hintIcon == true
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                          ),
+                        ),
                         obscureText: _controller.hintIcon,
                         autoFocus: true,
-                        onTab: () {
-                          _controller.toggle();
-                        },
+                        onTab: () {},
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'Password required';
+                          }
+                          if (value.length < 6) {
+                            return 'Password too short or not Security';
                           }
                           return null;
                         },

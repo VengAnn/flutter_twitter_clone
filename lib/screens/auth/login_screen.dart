@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:twitter_clone/components/textformfield_reusable_widget.dart';
 import 'package:twitter_clone/controllers/auth_controller.dart';
-import 'package:twitter_clone/screens/register_screen.dart';
+import 'package:twitter_clone/screens/auth/register_screen.dart';
 
-import '../constants/constant.dart';
+import '../../constants/constant.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -67,14 +67,19 @@ class LoginScreen extends StatelessWidget {
                         hintText: "Password",
                         prefixIcon: Icons.lock,
                         controller: passwordController,
-                        suffixIcon: _controller.hintIcon == true
-                            ? Icons.visibility_off
-                            : Icons.visibility,
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            _controller.toggle();
+                          },
+                          icon: Icon(
+                            _controller.hintIcon == true
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                          ),
+                        ),
                         obscureText: _controller.hintIcon,
                         // autoFocus: true,
-                        onTab: () {
-                          _controller.toggle();
-                        },
+                        onTab: () {},
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'Password required';

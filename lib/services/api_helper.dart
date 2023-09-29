@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:twitter_clone/models/user_login_res_model.dart';
 
 class APIHelper {
   final _dio = Dio();
@@ -47,7 +48,8 @@ class APIHelper {
     }
   }
 
-  Future<bool> login({required String email, required String password}) async {
+  Future<UserLoginResModel?> login(
+      {required String email, required String password}) async {
     try {
       final res = await _dio.post(
         "$_bashUrl/login",
@@ -62,10 +64,11 @@ class APIHelper {
         ),
       );
       if (res.statusCode == 200) {
-        return true; //success
+        return UserLoginResModel.fromJson(res.data); //success
+        //when login success backend will return user with data like name .. token ...
       }
       //failed
-      return false;
+      return null;
     } catch (e) {
       debugPrint(e.toString());
       throw Exception(e.toString());

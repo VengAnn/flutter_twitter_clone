@@ -12,7 +12,7 @@ class TextFormFieldReusableWidget extends StatelessWidget {
   final Function onTab;
   final EdgeInsetsGeometry? padding;
   final IconData? prefixIcon;
-  final IconData? suffixIcon;
+  final IconButton? suffixIcon;
   final int? maxLines;
   final int? minLines;
   final bool? enable;
@@ -63,7 +63,7 @@ class TextFormFieldReusableWidget extends StatelessWidget {
           labelText: lableText,
           hintText: hintText,
           prefixIcon: Icon(prefixIcon),
-          suffixIcon: Icon(suffixIcon),
+          suffixIcon: suffixIcon,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
