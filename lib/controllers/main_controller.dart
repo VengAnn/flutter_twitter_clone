@@ -6,10 +6,10 @@ import 'package:twitter_clone/screens/main/search_screen.dart';
 
 class MainController extends GetxController {
   int currentIndex = 0;
-  List lsScreens = const [
+  List lsScreens = [
     NewsFeedScreen(),
-    SearchScreen(),
-    NotificationScreen(),
-    ProfileScreen(),
+    const SearchScreen(),
+    const NotificationScreen(),
+    const ProfileScreen(),
   ];
 }

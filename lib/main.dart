@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
           page: () => MainScreen(),
           middlewares: [
             //middleWare check if token =null return to login screen
-            //if aready login return to mainscreen
+            //if already login return to mainscreen
             MainMiddleWare(),
           ],
         ),

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:twitter_clone/controllers/news_feed_controller.dart';
 
 class NewsFeedScreen extends StatelessWidget {
-  const NewsFeedScreen({super.key});
+  NewsFeedScreen({super.key});
+
+  final _controller = Get.put(NewsFeedController());
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +38,9 @@ class NewsFeedScreen extends StatelessWidget {
                   ),
                 )),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _controller.pickImage();
+                  },
                   icon: const Icon(Icons.image),
                 ),
               ],
