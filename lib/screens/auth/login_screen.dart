@@ -9,8 +9,8 @@ import '../../constants/constant.dart';
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
 
-  final emailController = TextEditingController(text: 'mario@gmail.com');
-  final passwordController = TextEditingController(text: '123123');
+  final emailController = TextEditingController(text: 'abc@gmail.com');
+  final passwordController = TextEditingController(text: '123');
   final _formKey = GlobalKey<FormState>();
   final _controller = Get.put(AuthController());
 

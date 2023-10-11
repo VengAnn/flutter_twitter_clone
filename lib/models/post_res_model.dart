@@ -6,10 +6,10 @@ class PostResModel {
   int? lastPage;
   String? lastPageUrl;
   List<Links>? links;
-  Null? nextPageUrl;
+  dynamic nextPageUrl;
   String? path;
   int? perPage;
-  Null? prevPageUrl;
+  dynamic prevPageUrl;
   int? to;
   int? total;
 
@@ -158,7 +158,7 @@ class User {
   int? id;
   String? name;
   String? email;
-  Null? profileUrl;
+  String? profileUrl;
   Null? emailVerifiedAt;
   String? createdAt;
   String? updatedAt;

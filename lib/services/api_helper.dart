@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -9,8 +8,8 @@ import '../models/post_res_model.dart';
 
 class APIHelper {
   final _dio = Dio();
-  final _bashUrl = "http://10.0.2.2:8000/api"; //local for andriod
-  //final _bashUrl = "http://10.0..2:8000/api"; //local for andriod
+  final _bashUrl = "http://192.168.0.108:8000/api"; //local for andriod
+  //final _bashUrl = "http://10.0.2.2:8000/api"; //local for andriod
   final box = GetStorage();
 
   Future<bool> register({
@@ -73,6 +72,7 @@ class APIHelper {
         //when login success backend will return user with data like name .. token ...
       }
       //failed
+      // print(res.data);
       return null;
     } catch (e) {
       debugPrint(e.toString());
@@ -114,21 +114,49 @@ class APIHelper {
   }
 
   Future<PostResModel> getAllPosts() async {
+    final token = box.read("token");
     try {
       final res = await _dio.get(
         "$_bashUrl/posts",
         options: Options(
           headers: {
+            "Connection": "Keep-Alive",
             "Accept": "application/json",
+            "Authorization": "Bearer $token",
           },
           followRedirects: false,
           validateStatus: (status) => status! <= 500,
         ),
       );
       if (res.statusCode == 200) {
+        //print(res.data);
         return PostResModel.fromJson(res.data);
       }
       throw Exception(res.data['message']);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<bool> likeDisLike({required int postId}) async {
+    final token = box.read("token");
+    try {
+      final res = await _dio.post(
+        // ignore: unnecessary_brace_in_string_interps
+        "$_bashUrl/posts/${postId}/likes",
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer $token",
+          },
+          followRedirects: false,
+          validateStatus: (status) => status! <= 500,
+        ),
+      );
+      if (res.statusCode == 200) {
+        return true;
+      }
+      throw Exception(res.data["message"]);
     } catch (e) {
       throw Exception(e.toString());
     }

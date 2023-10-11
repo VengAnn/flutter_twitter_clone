@@ -27,16 +27,18 @@ class NewsFeedScreen extends StatelessWidget {
                   child: Text('PH'),
                 ),
                 const Expanded(
-                    child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: TextField(
-                    decoration: InputDecoration(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: TextField(
+                      decoration: InputDecoration(
                         hintText: 'What\'s your mind?',
                         border: OutlineInputBorder(
                           borderSide: BorderSide.none,
-                        )),
+                        ),
+                      ),
+                    ),
                   ),
-                )),
+                ),
                 IconButton(
                   onPressed: () {
                     _controller.pickImage();
@@ -50,154 +52,210 @@ class NewsFeedScreen extends StatelessWidget {
               //color: Colors.amber,
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: 3,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      const Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundImage: NetworkImage(
-                                'https://1.bp.blogspot.com/-vdzLpHaoE8g/YCgchxEAyaI/AAAAAAAAEoQ/bUwLefj19mAaiGE6BEMHsIQ3-BiDEDpdgCLcBGAsYHQ/s590/Dasha%2BTaran%2Bphotos.jpg'),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 10.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+              child: GetBuilder<NewsFeedController>(
+                builder: (_) {
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      _controller.getAllPost();
+                    },
+                    child: ListView.builder(
+                      itemCount: _controller.posts.data != null
+                          ? _controller.posts.data!.length
+                          : 0,
+                      itemBuilder: (context, index) {
+                        final post = _controller.posts.data![index];
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
                               children: [
-                                Text('name'),
-                                Row(
-                                  children: [
-                                    Text(
-                                      '1 hour ago',
-                                      style: TextStyle(fontSize: 14),
-                                    ),
-                                    Icon(
-                                      Icons.public,
-                                      size: 14,
-                                    ),
-                                  ],
+                                post.user!.profileUrl != null
+                                    ? CircleAvatar(
+                                        backgroundImage: NetworkImage(
+                                          "http://192.168.0.108:8000/users/${post.user!.profileUrl}",
+                                        ),
+                                      )
+                                    : const CircleAvatar(
+                                        child: Text("P"),
+                                      ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('${post.user!.name}'),
+                                      const Row(
+                                        children: [
+                                          Text(
+                                            '1 hour ago',
+                                            style: TextStyle(fontSize: 14),
+                                          ),
+                                          Icon(
+                                            Icons.public,
+                                            size: 14,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Spacer(),
+                                const IconButton(
+                                  onPressed: null,
+                                  icon: Icon(Icons.more_horiz),
                                 ),
                               ],
                             ),
-                          ),
-                          Spacer(),
-                          IconButton(
-                            onPressed: null,
-                            icon: Icon(Icons.more_horiz),
-                          ),
-                        ],
-                      ),
-                      //
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s'
-                          'standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
-                          textAlign: TextAlign.justify,
-                        ),
-                      ),
-                      Image.network(
-                        'https://www.sukhbeerbrar.com/wp-content/uploads/2021/11/taaarannn_201312512_971878916686561_1371852452961023488_n-1-819x1024.jpg',
-                        fit: BoxFit.cover,
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              color: Colors.white,
-                              child: const Stack(
-                                children: [
-                                  Positioned(
-                                    child: Text(
-                                      '😍',
-                                      style: TextStyle(
-                                        fontSize: 16,
+                            //
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                '${post.caption}',
+                                textAlign: TextAlign.justify,
+                              ),
+                            ),
+
+                            post.imageUrl == null
+                                ? const SizedBox()
+                                : Center(
+                                    child: Image(
+                                      fit: BoxFit.cover,
+                                      image: NetworkImage(
+                                        "http://192.168.0.108:8000/posts/${post.imageUrl}",
                                       ),
+                                      // loadingBuilder: (_, child, loadingProgress) {
+                                      //   if (loadingProgress == null) {
+                                      //     // Image is fully loaded, return the child widget
+                                      //     return child;
+                                      //   } else {
+                                      //     return const CircularProgressIndicator();
+                                      //   }
+                                      // },
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Container(
+                                          child: const Icon(
+                                            Icons.broken_image_rounded,
+                                            size: 50,
+                                          ),
+                                        );
+                                      },
                                     ),
                                   ),
-                                  Positioned(
-                                    left: 15,
-                                    child: Text(
-                                      '😜',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                      ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    color: Colors.white,
+                                    child: Stack(
+                                      children: [
+                                        const Positioned(
+                                          child: Text(
+                                            '😍',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                        const Positioned(
+                                          left: 15,
+                                          child: Text(
+                                            '😜',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          left: 30,
+                                          child: Row(
+                                            children: [
+                                              const Text(
+                                                '👌',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                              //
+                                              Text("${post.likesCount} Likes"),
+                                            ],
+                                          ),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                                '${post.commentsCount} comments'),
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  Positioned(
-                                    left: 30,
-                                    child: Text(
-                                      '👌',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                      ),
+                                ),
+                              ],
+                            ),
+                            //
+                            const Divider(),
+                            //
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      shape: const RoundedRectangleBorder(),
+                                      // foregroundColor: Colors.red,
+                                    ),
+                                    onPressed: () {
+                                      _controller.likeDisLike(postId: post.id!);
+                                    },
+                                    child: Icon(
+                                      Icons.thumb_up,
+                                      color: post.liked!
+                                          ? Colors.blue
+                                          : Colors.grey,
                                     ),
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Text('1.5k Comments'),
-                                    ],
+                                ),
+                                //one more elevatedbutton
+                                Expanded(
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      shape: const RoundedRectangleBorder(),
+                                    ),
+                                    onPressed: () {},
+                                    child: const Icon(
+                                      Icons.comment,
+                                      color: Colors.black,
+                                    ),
                                   ),
-                                ],
+                                ),
+                                //one button share
+                                Expanded(
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      shape: const RoundedRectangleBorder(),
+                                    ),
+                                    onPressed: () {},
+                                    child: const Icon(
+                                      Icons.share_rounded,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(width: 5, color: Colors.grey),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      //
-                      const Divider(),
-                      //
-                      Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                shape: const RoundedRectangleBorder(),
-                              ),
-                              onPressed: () {},
-                              child: const Icon(
-                                Icons.thumb_up,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                          //one more elevatedbutton
-                          Expanded(
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                shape: const RoundedRectangleBorder(),
-                              ),
-                              onPressed: () {},
-                              child: const Icon(
-                                Icons.comment,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                          //one button share
-                          Expanded(
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                shape: const RoundedRectangleBorder(),
-                              ),
-                              onPressed: () {},
-                              child: const Icon(
-                                Icons.share_rounded,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(width: 5, color: Colors.grey),
-                        ),
-                      ),
-                    ],
+                          ],
+                        );
+                      },
+                    ),
                   );
                 },
               ),

@@ -11,7 +11,7 @@ class PostController extends GetxController {
       final success =
           await _apiHelper.createPost(caption: caption, photo: photo);
       if (success) {
-        Get.back();
+        Get.back(result: true);
       } else {
         Get.snackbar("Error", "Failed to CreatePost");
       }
